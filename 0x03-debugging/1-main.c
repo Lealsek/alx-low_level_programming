@@ -15,10 +15,11 @@ int main(void)
 
         while (i < 10)
         {
-                putchar(i);
+                putchar(i + '0'); // add '0' to convert i to ASCII value
+                i++; // add increment statement
         }
 
-        printf("Infinite loop avoided! \\o/\n");
+        printf("\nInfinite loop avoided! \\o/\n");
 
         return (0);
 }
