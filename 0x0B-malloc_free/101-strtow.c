@@ -1,57 +1,70 @@
 #include "main.h"
 #include <stdlib.h>
-#include <string.h>
+
 /**
- * strtow - splits a string to words
- * @str: string to split
- * Return: a point to an array of strings or NULL
+ * ch_free_grid - frees a 2 dimensional array.
+ * @grid: multidimensional array of char.
+ * @height: height of the array.
+ *
+ * Return: no return
+ */
+void ch_free_grid(char **grid, unsigned int height)
+{
+	if (grid != NULL && height != 0)
+	{
+		for (; height > 0; height--)
+			free(grid[height]);
+		free(grid[height]);
+		free(grid);
+	}
+}
+
+/**
+ * strtow - splits a string into words.
+ * @str: string.
+ *
+ * Return: pointer of an array of integers
  */
 char **strtow(char *str)
 {
-	char **arr_words = NULL;
-	int i, j = 0, wlen, slen, words = 0, sig = 0, pre_sig = 0;
+	char **aout;
+	unsigned int c, height, i, j, a1;
 
-	if (str == NULL)
+	if (str == NULL || *str == '\0')
 		return (NULL);
-	slen = strlen(str);
-	for (i = 0; i < slen; i++)
+	for (c = height = 0; str[c] != '\0'; c++)
 	{
-		sig = (str[i] == 32 || str[i] == '\t') ? 0 : 1;
-		words = (pre_sig == 0 && sig == 1) ? words + 1 : words;
-		pre_sig = sig;
+		if (str[c] != ' ' && (str[c + 1] == ' ' || str[c + 1] == '\0'))
+			height++;
 	}
-	if (words == 0)
-		return (NULL);
-	arr_words = malloc(words * sizeof(char *));
-	if (arr_words == NULL)
+	aout = malloc((height + 1) * sizeof(char *));
+	if (aout == NULL || height == 0)
 	{
-		free(arr_words);
+		free(aout);
 		return (NULL);
 	}
-	words = 0;
-	for (i = 0; i < slen; i++)
+	for (i = a1 = 0; i < height; i++)
 	{
-		sig = (str[i] == 32 || str[i] == 9) ? 0 : 1;
-		if (sig)
+		for (c = a1; str[c] != '\0'; c++)
 		{
-			for (j = 0; str[i + j] != 32 && str[i + j] != 9; j++)
-				;
-			wlen = j;
-			arr_words[words] = malloc(wlen * sizeof(char));
-			if (arr_words[words] == NULL)
+			if (str[c] == ' ')
+				a1++;
+			if (str[c] != ' ' && (str[c + 1] == ' ' || str[c + 1] == '\0'))
 			{
-				for (; words >= 0; words--)
-					free(arr_words[words]);
-				free(arr_words);
-				return (NULL);
+				aout[i] = malloc((c - a1 + 2) * sizeof(char));
+				if (aout[i] == NULL)
+				{
+					ch_free_grid(aout, i);
+					return (NULL);
+				}
+				break;
 			}
-			for (j = 0; j < wlen; j++)
-			{
-				arr_words[words][j] = str[i + j];
-			}
-			words++;
-			i += wlen - 1;
 		}
+		for (j = 0; a1 <= c; a1++, j++)
+			aout[i][j] = str[a1];
+		aout[i][j] = '\0';
 	}
-	return (arr_words);
+	aout[i] = NULL;
+	return (aout);
 }
+
