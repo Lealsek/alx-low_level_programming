@@ -1,9 +1,6 @@
-
 #ifndef LISTS_H
 #define LISTS_H
-
 #include <stdlib.h>
-
 
 typedef struct listint_s
 {
@@ -26,5 +23,7 @@ int delete_nodeint_at_index(listint_t **head, unsigned int index);
 listint_t *reverse_listint(listint_t **head);
 
 int _putchar(char c);
+
+listint_t *find_listint_loop(listint_t *head);
 
 #endif
